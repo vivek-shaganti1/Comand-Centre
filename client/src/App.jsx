@@ -4,7 +4,8 @@ import {
   Play, Volume2, VolumeX, Settings, Cpu, HardDrive, ShieldCheck, Zap,
   FolderGit2, ListTodo, Clock, Sparkles, Plus, Trash2, Bot, Layers, ArrowUpRight,
   Activity, BarChart3, FileCode, Check, Eye, RefreshCw, X, Users, GitMerge,
-  Workflow, Code2, Database, ShieldAlert, CheckCheck, Rocket, Palette, Layout
+  Workflow, Code2, Database, ShieldAlert, CheckCheck, Rocket, Palette, Layout,
+  Sliders, Search, ArrowRight, Shield
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -12,7 +13,7 @@ export default function App() {
   const [agents, setAgents] = useState([]);
   const [departments, setDepartments] = useState({});
   const [allWorkers, setAllWorkers] = useState([]);
-  const [totalCapacity, setTotalCapacity] = useState(1220);
+  const [totalCapacity, setTotalCapacity] = useState(1248);
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [voiceLogs, setVoiceLogs] = useState([]);
@@ -192,7 +193,7 @@ export default function App() {
       const res = await fetch('/api/workforce').then(r => r.json());
       setDepartments(res.departments || {});
       setAllWorkers(res.allWorkers || []);
-      setTotalCapacity(res.totalCapacity || 1220);
+      setTotalCapacity(res.totalCapacity || 1248);
     } catch (e) {}
   };
 
@@ -375,19 +376,23 @@ export default function App() {
       {/* Top HUD Navigation Bar */}
       <header className="top-hud-bar">
         <div className="brand-section">
-          <div
-            className="arc-reactor"
-            title="Arc Reactor Core - Click to Trigger EOD Briefing"
-            onClick={handleTriggerEOD}
-          />
+          <div className="reactor-wrapper" onClick={handleTriggerEOD} title="Arc Reactor Core // Click for End-of-Day Debrief">
+            <div className="reactor-orbit" />
+            <div className="arc-reactor" />
+          </div>
           <div>
-            <div className="brand-title">STARK // AVENGERS COMMAND CENTER</div>
-            <div className="brand-subtitle">ENTERPRISE WORKFORCE: {totalCapacity.toLocaleString()} EMPLOYEES // 8 SPECIALIZED DIVISIONS</div>
+            <div className="brand-title">
+              <span>STARK</span>
+              <span className="accent">// COMMAND CENTER</span>
+            </div>
+            <div className="brand-subtitle">
+              ENTERPRISE NEURAL HUD // {totalCapacity.toLocaleString()} ACTIVE WORKERS
+            </div>
           </div>
         </div>
 
-        {/* View Switcher Tabs */}
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        {/* Segmented Control Navigation Tabs */}
+        <div className="nav-tabs-group">
           {[
             { id: 'hub', label: 'SWARM HUB', icon: Bot },
             { id: 'pipeline', label: 'STAGE PIPELINE', icon: GitMerge },
@@ -398,45 +403,46 @@ export default function App() {
             { id: 'telegram', label: 'TELEGRAM', icon: Radio }
           ].map(tab => {
             const Icon = tab.icon;
+            const isActive = currentTab === tab.id;
             return (
               <button
                 key={tab.id}
-                className={`hud-btn ${currentTab === tab.id ? 'hud-btn-cyan' : 'hud-btn-outline'}`}
-                style={{ padding: '6px 10px', fontSize: '11px' }}
+                className={`nav-tab-btn ${isActive ? 'active' : ''}`}
                 onClick={() => setCurrentTab(tab.id)}
               >
-                <Icon size={13} />
+                <Icon size={14} />
                 <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
 
+        {/* System Status Indicators */}
         <div className="hud-status-badges">
           <div className="badge badge-cyan">
-            <Radio size={14} className="animate-pulse" />
-            <span>24/7 DAEMON: ACTIVE</span>
+            <Radio size={13} className="animate-pulse" />
+            <span>24/7 DAEMON</span>
           </div>
 
           <div className="badge badge-green">
-            <ShieldCheck size={14} />
-            <span>CAFFEINATE: ON</span>
+            <ShieldCheck size={13} />
+            <span>CAFFEINATE</span>
           </div>
 
           <button
             className={`hud-btn hud-btn-outline ${!soundEnabled ? 'opacity-50' : ''}`}
             onClick={() => setSoundEnabled(!soundEnabled)}
-            title="Toggle Speech Output"
+            title="Toggle Voice Speech Output"
           >
-            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+            {soundEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
           </button>
 
           <button
             className="hud-btn hud-btn-outline"
             onClick={() => setShowSettings(true)}
-            title="Configure .env and Settings"
+            title="Configure .env & Telegram"
           >
-            <Settings size={16} />
+            <Settings size={15} />
           </button>
         </div>
       </header>
@@ -444,20 +450,20 @@ export default function App() {
       {/* Active Multi-Stage Pipeline Banner */}
       {activeStageProgress && (
         <div style={{
-          background: 'linear-gradient(90deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.15))',
-          border: '1px solid #00f0ff',
-          borderRadius: '10px',
-          padding: '16px 22px',
+          background: 'linear-gradient(90deg, rgba(0, 240, 255, 0.12), rgba(168, 85, 247, 0.12))',
+          border: '1px solid var(--border-cyan)',
+          borderRadius: 'var(--radius-md)',
+          padding: '14px 20px',
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
-          boxShadow: '0 0 30px rgba(0, 240, 255, 0.25)'
+          boxShadow: '0 4px 24px rgba(0, 240, 255, 0.15)'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <GitMerge size={20} color="#00f0ff" className="animate-pulse" />
+              <GitMerge size={18} color="#00f0ff" className="animate-pulse" />
               <div>
-                <span style={{ fontFamily: 'Orbitron', color: '#00f0ff', fontWeight: 'bold', fontSize: '14px' }}>
+                <span style={{ fontFamily: 'var(--font-display)', color: '#00f0ff', fontWeight: 'bold', fontSize: '13.5px' }}>
                   ACTIVE PIPELINE: STAGE {activeStageProgress.stageNum}/8 [{activeStageProgress.dept.toUpperCase()}]
                 </span>
                 <div style={{ fontSize: '12px', color: '#cbd5e1', marginTop: '2px' }}>
@@ -466,28 +472,27 @@ export default function App() {
               </div>
             </div>
 
-            <span style={{ fontFamily: 'Orbitron', color: '#10b981', fontWeight: 'bold' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', color: '#10b981', fontWeight: 'bold', fontSize: '13px' }}>
               {activeStageProgress.progress}% COMPLETE
             </span>
           </div>
 
-          {/* 8-Stage Visual Indicator */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '6px' }}>
             {stageIcons.map(st => {
               const isCompleted = activeStageProgress.stageNum > st.num;
               const isCurrent = activeStageProgress.stageNum === st.num;
               return (
                 <div key={st.num} style={{
-                  background: isCompleted ? 'rgba(16, 185, 129, 0.3)' : isCurrent ? 'rgba(0, 240, 255, 0.4)' : 'rgba(0,0,0,0.4)',
-                  border: `1px solid ${isCurrent ? '#00f0ff' : isCompleted ? '#10b981' : 'rgba(255,255,255,0.1)'}`,
-                  borderRadius: '6px',
-                  padding: '6px 8px',
+                  background: isCompleted ? 'rgba(16, 185, 129, 0.25)' : isCurrent ? 'rgba(0, 240, 255, 0.35)' : 'rgba(0,0,0,0.3)',
+                  border: `1px solid ${isCurrent ? '#00f0ff' : isCompleted ? '#10b981' : 'rgba(255,255,255,0.08)'}`,
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '5px 8px',
                   textAlign: 'center',
                   fontSize: '11px',
                   color: isCurrent ? '#00f0ff' : isCompleted ? '#10b981' : '#64748b'
                 }}>
                   <div style={{ fontWeight: 'bold' }}>S{st.num}</div>
-                  <div style={{ fontSize: '10px' }}>{st.name}</div>
+                  <div style={{ fontSize: '9.5px', marginTop: '1px' }}>{st.name}</div>
                 </div>
               );
             })}
@@ -499,19 +504,19 @@ export default function App() {
       {leftoverCount > 0 && (
         <div className="leftover-banner">
           <div className="leftover-info">
-            <AlertCircle size={24} color="#f59e0b" />
+            <AlertCircle size={22} color="#f59e0b" />
             <div>
               <div className="leftover-title">
-                ATTENTION: {leftoverCount} LEFTOVER {leftoverCount === 1 ? 'WORK' : 'WORKS'} DETECTED
+                ATTENTION REQUIRED: {leftoverCount} LEFTOVER {leftoverCount === 1 ? 'TASK' : 'TASKS'} DETECTED
               </div>
-              <div style={{ fontSize: '13px', color: '#cbd5e1' }}>
-                F.R.I.D.A.Y. & Hawkeye-07 are monitoring deliverables across all departments.
+              <div style={{ fontSize: '12.5px', color: '#cbd5e1' }}>
+                F.R.I.D.A.Y. & Hawkeye-07 are monitoring deliverables across all departments. Complete priority directives today.
               </div>
             </div>
           </div>
 
           <button className="hud-btn hud-btn-amber" onClick={handleTriggerEOD}>
-            <Sparkles size={16} />
+            <Sparkles size={14} />
             <span>DAILY WORK REVIEW</span>
           </button>
         </div>
@@ -521,12 +526,12 @@ export default function App() {
       {currentTab === 'hub' && (
         <div className="main-layout">
           {/* Left: Voice & Task Quick Console */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div className="hud-panel">
               <div className="hud-panel-header">
                 <span className="panel-title">
-                  <Mic size={16} />
-                  <span>VOICE & DIRECTIVE HUB</span>
+                  <Mic size={15} className="icon-accent" />
+                  <span>VOICE DIRECTIVE HUB</span>
                 </span>
                 {isSpeaking && <span className="badge badge-cyan">JARVIS SPEAKING...</span>}
               </div>
@@ -538,7 +543,7 @@ export default function App() {
                     onClick={toggleRecording}
                     title="Click to speak directive"
                   >
-                    {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
+                    {isRecording ? <MicOff size={22} /> : <Mic size={22} />}
                   </button>
 
                   <div className="waveform-box">
@@ -548,7 +553,7 @@ export default function App() {
                         className={`wave-bar ${isRecording || isSpeaking ? 'active' : ''}`}
                         style={{
                           animationDelay: `${i * 0.08}s`,
-                          height: isRecording || isSpeaking ? `${h}%` : '6px'
+                          height: isRecording || isSpeaking ? `${h}%` : '4px'
                         }}
                       />
                     ))}
@@ -565,7 +570,7 @@ export default function App() {
                     onKeyDown={(e) => e.key === 'Enter' && handleExecuteCommand()}
                   />
                   <button className="hud-btn" onClick={() => handleExecuteCommand()}>
-                    <Send size={14} />
+                    <Send size={13} />
                   </button>
                 </div>
               </div>
@@ -593,7 +598,7 @@ export default function App() {
                   className="chip"
                   onClick={() => handleExecuteCommand('What works are leftover for today?')}
                 >
-                  📋 Check Leftover Works
+                  📋 Check Leftovers
                 </div>
               </div>
             </div>
@@ -602,12 +607,12 @@ export default function App() {
             <div className="hud-panel" style={{ flex: 1 }}>
               <div className="hud-panel-header">
                 <span className="panel-title">
-                  <ListTodo size={16} />
+                  <ListTodo size={15} className="icon-accent" />
                   <span>TASK WARDEN (FRIDAY-02)</span>
                 </span>
                 <button
                   className="hud-btn hud-btn-outline"
-                  style={{ padding: '4px 8px', fontSize: '11px' }}
+                  style={{ padding: '3px 8px', fontSize: '11px' }}
                   onClick={() => setShowAddTask(true)}
                 >
                   <Plus size={12} />
@@ -630,7 +635,7 @@ export default function App() {
                         <span className={`badge ${
                           t.priority === 'urgent' ? 'badge-red' :
                           t.priority === 'high' ? 'badge-amber' : 'badge-cyan'
-                        }`} style={{ padding: '1px 5px', fontSize: '10px' }}>
+                        }`} style={{ padding: '1px 5px', fontSize: '9.5px' }}>
                           {t.priority.toUpperCase()}
                         </span>
                         <span style={{ color: '#64748b' }}>{t.source}</span>
@@ -646,18 +651,21 @@ export default function App() {
           <div className="hud-panel">
             <div className="hud-panel-header">
               <span className="panel-title">
-                <Bot size={18} />
+                <Bot size={16} className="icon-accent" />
                 <span>EXECUTIVE 20-AGENT COUNCIL</span>
               </span>
 
-              <input
-                type="text"
-                className="hud-input"
-                style={{ maxWidth: '180px', padding: '5px 10px', fontSize: '12px' }}
-                placeholder="Filter council..."
-                value={searchAgent}
-                onChange={(e) => setSearchAgent(e.target.value)}
-              />
+              <div style={{ position: 'relative', width: '180px' }}>
+                <input
+                  type="text"
+                  className="hud-input"
+                  style={{ width: '100%', padding: '5px 10px 5px 26px', fontSize: '11.5px' }}
+                  placeholder="Filter council..."
+                  value={searchAgent}
+                  onChange={(e) => setSearchAgent(e.target.value)}
+                />
+                <Search size={12} style={{ position: 'absolute', left: '8px', top: '8px', color: '#64748b' }} />
+              </div>
             </div>
 
             <div className="agents-grid">
@@ -702,11 +710,11 @@ export default function App() {
           </div>
 
           {/* Right: Build Terminal */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div className="hud-panel">
               <div className="hud-panel-header">
                 <span className="panel-title">
-                  <Terminal size={16} />
+                  <Terminal size={15} className="icon-accent" />
                   <span>AUTONOMOUS BUILD TERMINAL</span>
                 </span>
                 <span className="badge badge-cyan">{projects.length} DELIVERED</span>
@@ -724,19 +732,19 @@ export default function App() {
               </div>
 
               {/* Projects List */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '190px', overflowY: 'auto' }}>
                 {projects.map(p => (
                   <div key={p.id} style={{
-                    background: 'rgba(0,0,0,0.5)',
-                    border: '1px solid rgba(0,240,255,0.15)',
-                    borderRadius: '6px',
+                    background: 'rgba(0,0,0,0.4)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-sm)',
                     padding: '8px 12px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center'
                   }}>
                     <div>
-                      <div style={{ fontFamily: 'Orbitron', fontSize: '12px', color: '#00f0ff' }}>{p.name}</div>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '12px', color: '#00f0ff', fontWeight: 'bold' }}>{p.name}</div>
                       <div style={{ fontSize: '10px', color: '#64748b' }}>{p.filesCount} files • {p.stages?.length || 8} stages</div>
                     </div>
 
@@ -757,7 +765,7 @@ export default function App() {
             <div className="hud-panel" style={{ flex: 1 }}>
               <div className="hud-panel-header">
                 <span className="panel-title">
-                  <Radio size={16} />
+                  <Radio size={15} className="icon-accent" />
                   <span>TELEGRAM SENTINEL</span>
                 </span>
                 <span className="badge badge-amber">{voiceLogs.length} LOGS</span>
@@ -766,11 +774,11 @@ export default function App() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '180px', overflowY: 'auto' }}>
                 {voiceLogs.slice(0, 4).map(vl => (
                   <div key={vl.id} style={{
-                    background: 'rgba(0,0,0,0.4)',
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    border: '1px solid rgba(255,255,255,0.05)'
+                    background: 'rgba(0,0,0,0.3)',
+                    padding: '7px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '11.5px',
+                    border: '1px solid var(--border-subtle)'
                   }}>
                     <div style={{ color: '#f1f5f9' }}>"{vl.transcript}"</div>
                     <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>
@@ -786,17 +794,17 @@ export default function App() {
 
       {/* TAB 2: STAGE PIPELINE TRACKER */}
       {currentTab === 'pipeline' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div className="hud-panel">
             <div className="hud-panel-header">
               <span className="panel-title">
-                <GitMerge size={18} />
+                <GitMerge size={16} className="icon-accent" />
                 <span>8-STAGE AUTONOMOUS MULTI-WORKER PIPELINE ARCHITECTURE</span>
               </span>
               <span className="badge badge-green">8 SPECIALIZED SQUADS ENGAGED</span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
               {[
                 { stage: 1, title: 'Planning & Architecture', worker: 'Arch. Ethan Cross', dept: 'Planning Division', icon: Workflow, desc: 'Generates system specifications, data flows & module boundaries in ARCHITECTURE.md' },
                 { stage: 2, title: 'UI/UX & Design Tokens', worker: 'Sophia Chen', dept: 'UI/UX Lab', icon: Palette, desc: 'Designs Stark glassmorphic color variables, responsive typography & CSS tokens' },
@@ -809,13 +817,13 @@ export default function App() {
               ].map(st => {
                 const Icon = st.icon;
                 return (
-                  <div key={st.stage} className="hud-panel" style={{ background: 'rgba(0,0,0,0.6)', padding: '16px' }}>
+                  <div key={st.stage} className="hud-panel" style={{ background: 'var(--bg-card)', padding: '16px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span className="badge badge-cyan" style={{ fontSize: '10px' }}>STAGE {st.stage}</span>
                       <Icon size={18} color="#00f0ff" />
                     </div>
 
-                    <div style={{ fontFamily: 'Orbitron', fontSize: '13px', color: '#fff', fontWeight: 'bold', margin: '8px 0 4px' }}>
+                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', color: '#fff', fontWeight: 'bold', margin: '8px 0 4px' }}>
                       {st.title}
                     </div>
 
@@ -826,7 +834,7 @@ export default function App() {
                       🏢 {st.dept}
                     </div>
 
-                    <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '8px', lineHeight: 1.4 }}>
+                    <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '8px', lineHeight: 1.45 }}>
                       {st.desc}
                     </p>
                   </div>
@@ -837,12 +845,12 @@ export default function App() {
         </div>
       )}
 
-      {/* TAB 3: WORKFORCE (1,200+ EMPLOYEES DIRECTORY) */}
+      {/* TAB 3: WORKFORCE DIRECTORY */}
       {currentTab === 'workforce' && (
         <div className="hud-panel">
           <div className="hud-panel-header">
             <span className="panel-title">
-              <Users size={18} />
+              <Users size={16} className="icon-accent" />
               <span>STARK ENTERPRISE WORKFORCE DIRECTORY ({totalCapacity.toLocaleString()} EMPLOYEES)</span>
             </span>
 
@@ -864,20 +872,23 @@ export default function App() {
                 <option value="DevOps">DevOps</option>
               </select>
 
-              <input
-                type="text"
-                className="hud-input"
-                style={{ maxWidth: '200px', padding: '5px 10px', fontSize: '12px' }}
-                placeholder="Search employees..."
-                value={searchWorker}
-                onChange={e => setSearchWorker(e.target.value)}
-              />
+              <div style={{ position: 'relative', width: '200px' }}>
+                <input
+                  type="text"
+                  className="hud-input"
+                  style={{ width: '100%', padding: '5px 10px 5px 26px', fontSize: '12px' }}
+                  placeholder="Search employees..."
+                  value={searchWorker}
+                  onChange={e => setSearchWorker(e.target.value)}
+                />
+                <Search size={12} style={{ position: 'absolute', left: '8px', top: '8px', color: '#64748b' }} />
+              </div>
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px', maxHeight: '580px', overflowY: 'auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '12px', maxHeight: '580px', overflowY: 'auto' }}>
             {filteredWorkers.map(w => (
-              <div key={w.id} className="agent-card" style={{ background: 'rgba(0,0,0,0.6)' }}>
+              <div key={w.id} className="agent-card" style={{ background: 'var(--bg-card)' }}>
                 <div className="agent-header">
                   <div className="agent-avatar">{w.avatar || '👤'}</div>
                   <div>
@@ -890,7 +901,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div style={{ fontSize: '11px', color: '#f59e0b', fontFamily: 'Orbitron' }}>
+                <div style={{ fontSize: '11px', color: '#f59e0b', fontFamily: 'var(--font-mono)' }}>
                   🏢 {w.division}
                 </div>
 
@@ -910,14 +921,14 @@ export default function App() {
 
       {/* TAB 4: METRICS */}
       {currentTab === 'metrics' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
             <div className="hud-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', color: '#00f0ff' }}>
-                <Cpu size={20} />
-                <span style={{ fontSize: '11px', fontFamily: 'Orbitron' }}>SYSTEM RAM</span>
+                <Cpu size={18} />
+                <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>SYSTEM RAM</span>
               </div>
-              <div style={{ fontSize: '24px', fontFamily: 'Orbitron', fontWeight: 'bold', color: '#fff' }}>
+              <div style={{ fontSize: '22px', fontFamily: 'var(--font-display)', fontWeight: 'bold', color: '#fff' }}>
                 {metrics?.memory?.rss || '64 MB'}
               </div>
               <div style={{ fontSize: '12px', color: '#94a3b8' }}>Heap Used: {metrics?.memory?.heapUsed || '32 MB'}</div>
@@ -925,10 +936,10 @@ export default function App() {
 
             <div className="hud-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}>
-                <Activity size={20} />
-                <span style={{ fontSize: '11px', fontFamily: 'Orbitron' }}>TASK VELOCITY</span>
+                <Activity size={18} />
+                <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>TASK VELOCITY</span>
               </div>
-              <div style={{ fontSize: '24px', fontFamily: 'Orbitron', fontWeight: 'bold', color: '#10b981' }}>
+              <div style={{ fontSize: '22px', fontFamily: 'var(--font-display)', fontWeight: 'bold', color: '#10b981' }}>
                 {metrics?.taskVelocity?.completionRate || '100%'}
               </div>
               <div style={{ fontSize: '12px', color: '#94a3b8' }}>
@@ -938,10 +949,10 @@ export default function App() {
 
             <div className="hud-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f59e0b' }}>
-                <Users size={20} />
-                <span style={{ fontSize: '11px', fontFamily: 'Orbitron' }}>WORKFORCE POOL</span>
+                <Users size={18} />
+                <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>WORKFORCE POOL</span>
               </div>
-              <div style={{ fontSize: '24px', fontFamily: 'Orbitron', fontWeight: 'bold', color: '#f59e0b' }}>
+              <div style={{ fontSize: '22px', fontFamily: 'var(--font-display)', fontWeight: 'bold', color: '#f59e0b' }}>
                 {totalCapacity.toLocaleString()} ACTIVE
               </div>
               <div style={{ fontSize: '12px', color: '#94a3b8' }}>8 Specialized Divisions</div>
@@ -949,10 +960,10 @@ export default function App() {
 
             <div className="hud-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', color: '#a855f7' }}>
-                <Clock size={20} />
-                <span style={{ fontSize: '11px', fontFamily: 'Orbitron' }}>UPTIME</span>
+                <Clock size={18} />
+                <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)' }}>UPTIME</span>
               </div>
-              <div style={{ fontSize: '24px', fontFamily: 'Orbitron', fontWeight: 'bold', color: '#fff' }}>
+              <div style={{ fontSize: '22px', fontFamily: 'var(--font-display)', fontWeight: 'bold', color: '#fff' }}>
                 {metrics ? `${Math.floor(metrics.uptimeSeconds / 60)}m ${metrics.uptimeSeconds % 60}s` : 'Active'}
               </div>
               <div style={{ fontSize: '12px', color: '#94a3b8' }}>Background Sentinel Healthy</div>
@@ -962,7 +973,7 @@ export default function App() {
           <div className="hud-panel">
             <div className="hud-panel-header">
               <span className="panel-title">
-                <Activity size={16} />
+                <Activity size={15} className="icon-accent" />
                 <span>REAL-TIME AGENT & WORKER EXECUTION TIMELINE</span>
               </span>
               <button className="hud-btn hud-btn-outline" style={{ padding: '4px 8px', fontSize: '11px' }} onClick={fetchMetrics}>
@@ -977,21 +988,21 @@ export default function App() {
               ) : (
                 metrics.agentLogs.map((log) => (
                   <div key={log.id} style={{
-                    background: 'rgba(0,0,0,0.5)',
-                    border: '1px solid rgba(0, 240, 255, 0.1)',
-                    borderRadius: '6px',
-                    padding: '10px 14px',
+                    background: 'rgba(0,0,0,0.4)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-sm)',
+                    padding: '9px 12px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <span className="badge badge-cyan" style={{ fontSize: '10px' }}>{log.agentId}</span>
-                      <span style={{ color: '#f1f5f9', fontWeight: 600, fontSize: '13px' }}>{log.agentName}</span>
-                      <span style={{ color: '#94a3b8', fontSize: '13px' }}>{log.message}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span className="badge badge-cyan" style={{ fontSize: '9.5px' }}>{log.agentId}</span>
+                      <span style={{ color: '#f1f5f9', fontWeight: 600, fontSize: '12.5px' }}>{log.agentName}</span>
+                      <span style={{ color: '#94a3b8', fontSize: '12.5px' }}>{log.message}</span>
                     </div>
 
-                    <span style={{ color: '#64748b', fontSize: '11px', fontFamily: 'JetBrains Mono' }}>
+                    <span style={{ color: '#64748b', fontSize: '10.5px', fontFamily: 'var(--font-mono)' }}>
                       {new Date(log.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
@@ -1007,16 +1018,16 @@ export default function App() {
         <div className="hud-panel">
           <div className="hud-panel-header">
             <span className="panel-title">
-              <ListTodo size={18} />
+              <ListTodo size={16} className="icon-accent" />
               <span>STARK TASK WARDEN // ALL DIRECTIVES & DELIVERABLES</span>
             </span>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <button className="hud-btn hud-btn-outline" onClick={() => setFilterTask('all')}>ALL ({tasks.length})</button>
               <button className="hud-btn hud-btn-amber" onClick={() => setFilterTask('leftover')}>LEFTOVERS ({leftoverCount})</button>
               <button className="hud-btn hud-btn-outline" onClick={() => setFilterTask('completed')}>COMPLETED</button>
               <button className="hud-btn" onClick={() => setShowAddTask(true)}>
-                <Plus size={14} />
+                <Plus size={13} />
                 <span>NEW DIRECTIVE</span>
               </button>
             </div>
@@ -1032,7 +1043,7 @@ export default function App() {
                   onChange={() => toggleTaskStatus(t)}
                 />
                 <div className="task-body">
-                  <div className="task-title" style={{ fontSize: '16px' }}>{t.title}</div>
+                  <div className="task-title" style={{ fontSize: '15px' }}>{t.title}</div>
                   {t.description && <div className="task-desc">{t.description}</div>}
                   <div className="task-meta">
                     <span className={`badge ${
@@ -1049,7 +1060,7 @@ export default function App() {
                   onClick={() => deleteTask(t.id)}
                   style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', padding: '6px' }}
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={15} />
                 </button>
               </div>
             ))}
@@ -1059,29 +1070,29 @@ export default function App() {
 
       {/* TAB 6: PROJECTS */}
       {currentTab === 'projects' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px' }}>
           <div className="hud-panel">
             <div className="hud-panel-header">
               <span className="panel-title">
-                <FolderGit2 size={18} />
+                <FolderGit2 size={16} className="icon-accent" />
                 <span>AUTONOMOUS WORKSPACE PROJECTS</span>
               </span>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '550px', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '550px', overflowY: 'auto' }}>
               {projects.map(p => (
-                <div key={p.id} className="hud-panel" style={{ padding: '14px', background: 'rgba(0,0,0,0.6)' }}>
+                <div key={p.id} className="hud-panel" style={{ padding: '14px', background: 'var(--bg-card)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'Orbitron', fontSize: '15px', color: '#00f0ff' }}>{p.name}</span>
+                    <span style={{ fontFamily: 'var(--font-display)', fontSize: '14px', color: '#00f0ff', fontWeight: 'bold' }}>{p.name}</span>
                     <span className="badge badge-green">{p.builderEngine?.toUpperCase()}</span>
                   </div>
 
-                  <p style={{ fontSize: '12px', color: '#cbd5e1', margin: '6px 0' }}>"{p.description}"</p>
-                  <div style={{ fontSize: '11px', fontFamily: 'JetBrains Mono', color: '#94a3b8' }}>📁 {p.path}</div>
+                  <p style={{ fontSize: '12px', color: '#cbd5e1', margin: '5px 0' }}>"{p.description}"</p>
+                  <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: '#94a3b8' }}>📁 {p.path}</div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
                     <span style={{ fontSize: '11px', color: '#64748b' }}>{p.filesCount} files generated ({p.stages?.length || 8} stages)</span>
-                    <button className="hud-btn hud-btn-outline" style={{ padding: '4px 10px', fontSize: '11px' }} onClick={() => setInspectProject(p)}>
+                    <button className="hud-btn hud-btn-outline" style={{ padding: '3px 8px', fontSize: '11px' }} onClick={() => setInspectProject(p)}>
                       <Eye size={12} />
                       <span>INSPECT CODE</span>
                     </button>
@@ -1094,7 +1105,7 @@ export default function App() {
           <div className="hud-panel">
             <div className="hud-panel-header">
               <span className="panel-title">
-                <Terminal size={18} />
+                <Terminal size={16} className="icon-accent" />
                 <span>LIVE COMPILATION FEED</span>
               </span>
             </div>
@@ -1114,28 +1125,28 @@ export default function App() {
         <div className="hud-panel">
           <div className="hud-panel-header">
             <span className="panel-title">
-              <Radio size={18} />
+              <Radio size={16} className="icon-accent" />
               <span>TELEGRAM MOBILE VOICE VAULT & AUDIO INTELLIGENCE</span>
             </span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '550px', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '550px', overflowY: 'auto' }}>
             {voiceLogs.map(vl => (
               <div key={vl.id} style={{
-                background: 'rgba(0,0,0,0.6)',
-                border: '1px solid rgba(0, 240, 255, 0.15)',
-                borderRadius: '8px',
-                padding: '14px'
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px'
               }}>
-                <div style={{ fontSize: '15px', color: '#fff', fontWeight: 600 }}>
+                <div style={{ fontSize: '14px', color: '#fff', fontWeight: 600 }}>
                   "{vl.transcript}"
                 </div>
 
-                <div style={{ margin: '8px 0', fontSize: '13px', color: '#38bdf8', background: 'rgba(0,240,255,0.05)', padding: '8px 12px', borderRadius: '6px' }}>
+                <div style={{ margin: '6px 0', fontSize: '12.5px', color: '#38bdf8', background: 'rgba(0,240,255,0.04)', padding: '6px 10px', borderRadius: 'var(--radius-sm)' }}>
                   {vl.responseText}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#64748b' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10.5px', color: '#64748b' }}>
                   <span>INTENT: {vl.parsedIntent?.actionType?.toUpperCase()}</span>
                   <span>TIME: {new Date(vl.createdAt).toLocaleString()}</span>
                 </div>
@@ -1148,21 +1159,21 @@ export default function App() {
       {/* Inspect Project File Modal */}
       {inspectProject && (
         <div className="modal-overlay" onClick={() => setInspectProject(null)}>
-          <div className="modal-card" style={{ maxWidth: '800px', width: '90%' }} onClick={e => e.stopPropagation()}>
+          <div className="modal-card" style={{ maxWidth: '820px', width: '90%' }} onClick={e => e.stopPropagation()}>
             <div className="hud-panel-header">
               <span className="panel-title">
-                <FileCode size={16} />
-                <span>INSPECTING WORKSPACE: {inspectProject.name.toUpperCase()}</span>
+                <FileCode size={16} className="icon-accent" />
+                <span>WORKSPACE ARTIFACTS: {inspectProject.name.toUpperCase()}</span>
               </span>
               <button
                 onClick={() => setInspectProject(null)}
                 style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}
               >
-                <X size={18} />
+                <X size={17} />
               </button>
             </div>
 
-            <div style={{ margin: '14px 0', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ margin: '12px 0', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               {inspectProject.files?.map(file => (
                 <button
                   key={file}
@@ -1175,17 +1186,17 @@ export default function App() {
             </div>
 
             {activeFileContent ? (
-              <div style={{ background: '#020611', padding: '12px', borderRadius: '8px', border: '1px solid rgba(0,240,255,0.2)', maxHeight: '320px', overflowY: 'auto' }}>
-                <div style={{ fontSize: '11px', color: '#00f0ff', marginBottom: '8px', fontFamily: 'JetBrains Mono' }}>
+              <div style={{ background: '#020611', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-cyan)', maxHeight: '340px', overflowY: 'auto' }}>
+                <div style={{ fontSize: '11px', color: '#00f0ff', marginBottom: '8px', fontFamily: 'var(--font-mono)' }}>
                   // File: {activeFileContent.fileName}
                 </div>
-                <pre style={{ color: '#10b981', fontFamily: 'JetBrains Mono', fontSize: '12px', whiteSpace: 'pre-wrap' }}>
+                <pre style={{ color: '#10b981', fontFamily: 'var(--font-mono)', fontSize: '11.5px', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
                   {activeFileContent.content}
                 </pre>
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '30px', color: '#64748b' }}>
-                Click on any generated file above to preview its code in real-time.
+              <div style={{ textAlign: 'center', padding: '28px', color: '#64748b', fontSize: '13px' }}>
+                Click on any generated artifact above to preview its code in real-time.
               </div>
             )}
           </div>
@@ -1199,13 +1210,13 @@ export default function App() {
             <div className="hud-panel-header">
               <span className="panel-title">ADD DIRECTIVE TO TASK WARDEN</span>
             </div>
-            <form onSubmit={handleCreateTask} style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '16px' }}>
+            <form onSubmit={handleCreateTask} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '14px' }}>
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8' }}>Task Directive Title</label>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>Task Directive Title</label>
                 <input
                   type="text"
                   className="hud-input"
-                  style={{ width: '100%', marginTop: '6px' }}
+                  style={{ width: '100%', marginTop: '5px' }}
                   placeholder="e.g. Calibrate Mark 85 repulsor sensors"
                   value={newTaskTitle}
                   onChange={e => setNewTaskTitle(e.target.value)}
@@ -1213,12 +1224,12 @@ export default function App() {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ fontSize: '12px', color: '#94a3b8' }}>Priority</label>
+                  <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>Priority</label>
                   <select
                     className="hud-input"
-                    style={{ width: '100%', marginTop: '6px' }}
+                    style={{ width: '100%', marginTop: '5px' }}
                     value={newTaskPriority}
                     onChange={e => setNewTaskPriority(e.target.value)}
                   >
@@ -1230,18 +1241,18 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: '12px', color: '#94a3b8' }}>Category</label>
+                  <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>Category</label>
                   <input
                     type="text"
                     className="hud-input"
-                    style={{ width: '100%', marginTop: '6px' }}
+                    style={{ width: '100%', marginTop: '5px' }}
                     value={newTaskCategory}
                     onChange={e => setNewTaskCategory(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
                 <button type="button" className="hud-btn hud-btn-outline" onClick={() => setShowAddTask(false)}>
                   CANCEL
                 </button>
@@ -1263,20 +1274,20 @@ export default function App() {
                 DISPATCH DIRECTIVE TO {showDispatchModal.name.toUpperCase()}
               </span>
             </div>
-            <div style={{ margin: '16px 0', fontSize: '14px', color: '#94a3b8' }}>
+            <div style={{ margin: '12px 0', fontSize: '13px', color: '#94a3b8' }}>
               Specialty: <strong style={{ color: '#00f0ff' }}>{showDispatchModal.specialty}</strong>
             </div>
 
             <textarea
               className="hud-input"
-              style={{ width: '100%', height: '100px', resize: 'none' }}
+              style={{ width: '100%', height: '90px', resize: 'none' }}
               placeholder={`Enter specific instruction for ${showDispatchModal.name}...`}
               value={dispatchDirective}
               onChange={e => setDispatchDirective(e.target.value)}
               autoFocus
             />
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '14px' }}>
               <button className="hud-btn hud-btn-outline" onClick={() => setShowDispatchModal(null)}>
                 CANCEL
               </button>
@@ -1295,13 +1306,13 @@ export default function App() {
             <div className="hud-panel-header">
               <span className="panel-title">STARK COMMAND & ENVIRONMENT CONFIGURATION</span>
             </div>
-            <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '16px' }}>
+            <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '14px' }}>
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8' }}>TELEGRAM_BOT_TOKEN</label>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>TELEGRAM_BOT_TOKEN</label>
                 <input
                   type="password"
                   className="hud-input"
-                  style={{ width: '100%', marginTop: '6px' }}
+                  style={{ width: '100%', marginTop: '5px' }}
                   placeholder="e.g. 712345678:AAH..."
                   value={settingsForm.telegramToken || ''}
                   onChange={e => setSettingsForm({ ...settingsForm, telegramToken: e.target.value })}
@@ -1309,11 +1320,11 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8' }}>TELEGRAM_CHAT_ID</label>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>TELEGRAM_CHAT_ID</label>
                 <input
                   type="text"
                   className="hud-input"
-                  style={{ width: '100%', marginTop: '6px' }}
+                  style={{ width: '100%', marginTop: '5px' }}
                   placeholder="e.g. 987654321"
                   value={settingsForm.telegramChatId || ''}
                   onChange={e => setSettingsForm({ ...settingsForm, telegramChatId: e.target.value })}
@@ -1321,11 +1332,11 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8' }}>OPENAI_API_KEY (Optional for Whisper)</label>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>OPENAI_API_KEY (Optional for Whisper)</label>
                 <input
                   type="password"
                   className="hud-input"
-                  style={{ width: '100%', marginTop: '6px' }}
+                  style={{ width: '100%', marginTop: '5px' }}
                   placeholder="sk-..."
                   value={settingsForm.openaiApiKey || ''}
                   onChange={e => setSettingsForm({ ...settingsForm, openaiApiKey: e.target.value })}
@@ -1333,17 +1344,17 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ fontSize: '12px', color: '#94a3b8' }}>EOD_REMINDER_TIME (24-hour format HH:MM)</label>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>EOD_REMINDER_TIME (24-hour format HH:MM)</label>
                 <input
                   type="time"
                   className="hud-input"
-                  style={{ width: '100%', marginTop: '6px' }}
+                  style={{ width: '100%', marginTop: '5px' }}
                   value={settingsForm.eodReminderTime || '21:00'}
                   onChange={e => setSettingsForm({ ...settingsForm, eodReminderTime: e.target.value })}
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
                 <button type="button" className="hud-btn hud-btn-outline" onClick={() => setShowSettings(false)}>
                   CANCEL
                 </button>
