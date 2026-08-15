@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import https from 'https';
 import http from 'http';
+import { fileURLToPath } from 'url';
 import { db } from './db.js';
 import { agentSwarm } from './agents.js';
 import { ProjectBuilder } from './projectBuilder.js';
@@ -9,6 +10,9 @@ import { sleepManager } from './sleepManager.js';
 import { OpenAiService } from './openAiService.js';
 import { GroqService } from './groqService.js';
 import { DecisionMatrix } from './decisionMatrix.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class TelegramService {
   constructor() {
