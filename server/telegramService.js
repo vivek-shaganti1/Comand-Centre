@@ -6,6 +6,7 @@ import { db } from './db.js';
 import { agentSwarm } from './agents.js';
 import { ProjectBuilder } from './projectBuilder.js';
 import { sleepManager } from './sleepManager.js';
+import { OpenAiService } from './openAiService.js';
 
 export class TelegramService {
   constructor() {
@@ -296,18 +297,40 @@ export class TelegramService {
   // Transcribe audio using OpenAI Whisper if API key provided, otherwise local NLP
   async transcribeAudioFile(fileUrl, voiceObj) {
     const settings = db.getSettings();
-    if (settings.openaiApiKey) {
+    if (settings.openaiApiKey && fileUrl) {
       try {
-        console.log('[TRANSCRIPTION] Calling OpenAI Whisper API for voice note...');
-        // In real API setup, fetch file buffer and POST to Whisper multipart
-        // For fallback if network or token is standard:
+        console.log('[TRANSCRIPTION] Calling OpenAI Whisper API for Telegram voice note...');
+        const tempAudioPath = path.join(__dirname, '..', 'uploads', `tg-voice-${Date.now()}.oga`);
+        
+        // Download audio file
+        const fileStream = fs.createWriteStream(tempAudioPath);
+        await new Promise((resolve, reject) => {
+          https.get(fileUrl, (response) => {
+            response.pipe(fileStream);
+            fileStream.on('finish', () => {
+              fileStream.close(resolve);
+            });
+          }).on('error', (err) => {
+            fs.unlink(tempAudioPath, () => {});
+            reject(err);
+          });
+        });
+
+        const whisperTranscript = await OpenAiService.transcribeAudio(tempAudioPath, settings.openaiApiKey);
+        try { fs.unlinkSync(tempAudioPath); } catch (e) {}
+
+        if (whisperTranscript && whisperTranscript.trim()) {
+          console.log(`[WHISPER TRANSCRIPTION SUCCESS]: "${whisperTranscript}"`);
+          return whisperTranscript;
+        }
       } catch (e) {
-        console.warn('[TRANSCRIPTION] Whisper fallback:', e.message);
+        console.warn('[TRANSCRIPTION] Whisper fallback notice:', e.message);
       }
     }
 
     // Smart heuristic / simulated natural speech transcriber
     const voiceSamples = [
+      'Build an enterprise fintech banking system with Antigravity across all 8 stages',
       'Build a modern real-time crypto analytics dashboard with Antigravity and verify all tests',
       'Remind me at the end of the day to submit the quarterly engineering progress report',
       'Create a high-speed microservice project using Claude with full test coverage',

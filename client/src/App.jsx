@@ -417,8 +417,42 @@ export default function App() {
           })}
         </div>
 
-        {/* System Status Indicators */}
+        {/* System Status Indicators & AI Model Selector */}
         <div className="hud-status-badges">
+          {/* AI Model Selector */}
+          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(0, 240, 255, 0.08)', border: '1px solid var(--border-cyan)', borderRadius: 'var(--radius-sm)', padding: '2px 8px' }}>
+            <Sparkles size={12} color="#00f0ff" style={{ marginRight: '6px' }} />
+            <select
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: '#00f0ff',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                fontWeight: 600,
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+              value={settings.selectedModel || 'gpt-4o'}
+              onChange={async (e) => {
+                const newModel = e.target.value;
+                const updated = await fetch('/api/settings', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ selectedModel: newModel })
+                }).then(r => r.json());
+                setSettings(updated);
+                setSettingsForm(prev => ({ ...prev, selectedModel: newModel }));
+              }}
+            >
+              <option value="gpt-4o" style={{ background: '#0a1020', color: '#fff' }}>OpenAI GPT-4o (Default)</option>
+              <option value="gpt-4o-mini" style={{ background: '#0a1020', color: '#fff' }}>OpenAI GPT-4o-mini</option>
+              <option value="o3-mini" style={{ background: '#0a1020', color: '#fff' }}>OpenAI o3-mini (Reasoning)</option>
+              <option value="claude-3-5-sonnet" style={{ background: '#0a1020', color: '#fff' }}>Claude 3.5 Sonnet</option>
+              <option value="antigravity-stark" style={{ background: '#0a1020', color: '#fff' }}>Antigravity Stark Core</option>
+            </select>
+          </div>
+
           <div className="badge badge-cyan">
             <Radio size={13} className="animate-pulse" />
             <span>24/7 DAEMON</span>
@@ -1332,7 +1366,7 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>OPENAI_API_KEY (Optional for Whisper)</label>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>OPENAI_API_KEY (For Whisper Audio & GPT-4o Code Engine)</label>
                 <input
                   type="password"
                   className="hud-input"
@@ -1341,6 +1375,22 @@ export default function App() {
                   value={settingsForm.openaiApiKey || ''}
                   onChange={e => setSettingsForm({ ...settingsForm, openaiApiKey: e.target.value })}
                 />
+              </div>
+
+              <div>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>PRIMARY_AI_MODEL</label>
+                <select
+                  className="hud-input"
+                  style={{ width: '100%', marginTop: '5px' }}
+                  value={settingsForm.selectedModel || 'gpt-4o'}
+                  onChange={e => setSettingsForm({ ...settingsForm, selectedModel: e.target.value })}
+                >
+                  <option value="gpt-4o">OpenAI GPT-4o (High Performance Flagship)</option>
+                  <option value="gpt-4o-mini">OpenAI GPT-4o-mini (Fast & Efficient)</option>
+                  <option value="o3-mini">OpenAI o3-mini (High-Level Reasoning)</option>
+                  <option value="claude-3-5-sonnet">Claude 3.5 Sonnet (Anthropic)</option>
+                  <option value="antigravity-stark">Antigravity Stark Core Engine</option>
+                </select>
               </div>
 
               <div>

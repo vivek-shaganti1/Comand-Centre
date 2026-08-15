@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { db } from './db.js';
 import { agentSwarm } from './agents.js';
 import { sleepManager } from './sleepManager.js';
+import { OpenAiService } from './openAiService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -159,8 +160,18 @@ export class ProjectBuilder {
           progress: stageProgress
         });
 
-        // Stage-specific file generation
-        const filesForStage = ProjectBuilder.generateFilesForStage(st.key, name, prompt, engine);
+        // Stage-specific file generation (OpenAI GPT-4o / GPT-4o-mini with local generator fallback)
+        let filesForStage = await OpenAiService.generateStageCode({
+          stageKey: st.key,
+          projectName: name,
+          prompt,
+          modelOverride: db.getSettings().selectedModel
+        });
+
+        if (!filesForStage || filesForStage.length === 0) {
+          filesForStage = ProjectBuilder.generateFilesForStage(st.key, name, prompt, engine);
+        }
+
         for (const file of filesForStage) {
           const filePath = path.join(projectPath, file.path);
           const fileDir = path.dirname(filePath);

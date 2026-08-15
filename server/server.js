@@ -22,6 +22,7 @@ import { telegramService } from './telegramService.js';
 import { reminderScheduler } from './reminderScheduler.js';
 import { ProjectBuilder } from './projectBuilder.js';
 import { sleepManager } from './sleepManager.js';
+import { OpenAiService } from './openAiService.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -255,8 +256,14 @@ app.post('/api/voice/process', upload.single('audio'), async (req, res) => {
     const audioPath = req.file ? req.file.path : '';
     const isVoice = Boolean(req.file || req.body.isVoice);
 
+    // If audio file uploaded and no transcript, transcribe with OpenAI Whisper
+    if (audioPath && !transcript) {
+      const whisperText = await OpenAiService.transcribeAudio(audioPath);
+      if (whisperText) transcript = whisperText;
+    }
+
     if (!transcript) {
-      transcript = 'Build a responsive crypto tracker dashboard with Antigravity and test all components';
+      transcript = 'Build an enterprise fintech banking system with Antigravity across all 8 stages';
     }
 
     const result = await telegramService.processCommandWorkflow(

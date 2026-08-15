@@ -73,6 +73,8 @@ const defaultData = {
     telegramToken: process.env.TELEGRAM_BOT_TOKEN || '',
     telegramChatId: process.env.TELEGRAM_CHAT_ID || '',
     openaiApiKey: process.env.OPENAI_API_KEY || '',
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY || '',
+    selectedModel: process.env.OPENAI_MODEL || 'gpt-4o',
     eodReminderTime: '21:00', // 9 PM default
     caffeinateEnabled: true,
     soundEnabled: true,
