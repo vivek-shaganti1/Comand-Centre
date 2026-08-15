@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { neonDb } from './neonDb.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -136,6 +137,7 @@ class Database {
     };
     this.data.tasks.unshift(newTask);
     this.save();
+    neonDb.syncTask(newTask).catch(() => {});
     return newTask;
   }
 
@@ -151,6 +153,7 @@ class Database {
       }
       this.data.tasks[idx] = { ...this.data.tasks[idx], ...updates };
       this.save();
+      neonDb.syncTask(this.data.tasks[idx]).catch(() => {});
       return this.data.tasks[idx];
     }
     return null;
@@ -235,6 +238,7 @@ class Database {
     if (!this.data.projects) this.data.projects = [];
     this.data.projects.unshift(newProject);
     this.save();
+    neonDb.syncProject(newProject).catch(() => {});
     return newProject;
   }
 

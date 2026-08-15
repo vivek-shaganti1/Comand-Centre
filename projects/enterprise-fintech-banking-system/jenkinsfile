@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh 'docker build -t antigravity .'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'docker run -d -p 8080:8080 antigravity'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose up -d'
+            }
+        }
+    }
+}

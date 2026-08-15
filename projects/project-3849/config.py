@@ -1,0 +1,5 @@
+DB_NAME = 'project_3849'
+DB_USER = 'project_3849_user'
+DB_PASSWORD = 'project_3849_password'
+DB_HOST = 'localhost'
+DB_PORT = '5432'

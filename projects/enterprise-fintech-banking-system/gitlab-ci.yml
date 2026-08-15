@@ -1,0 +1,16 @@
+stages:
+  - build
+  - test
+  - deploy
+build:
+  stage: build
+  script:
+    - docker build -t antigravity .
+test:
+  stage: test
+  script:
+    - docker run -d -p 8080:8080 antigravity
+deploy:
+  stage: deploy
+  script:
+    - docker-compose up -d

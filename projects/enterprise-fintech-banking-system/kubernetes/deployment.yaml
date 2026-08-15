@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antigravity
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: antigravity
+  template:
+    metadata:
+      labels:
+        app: antigravity
+    spec:
+      containers:
+      - name: antigravity
+        image: antigravity:latest
+        ports:
+        - containerPort: 8080

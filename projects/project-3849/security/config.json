@@ -1,0 +1,6 @@
+{
+  "auth": {
+    "secretKey": "your_secret_key",
+    "tokenExpiration": 3600
+  }
+}

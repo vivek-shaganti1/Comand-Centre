@@ -1,0 +1,18 @@
+{
+    "test_data": {
+        "accounts": [
+            {
+                "account_number": "1234567890",
+                "account_holder": "John Doe",
+                "balance": 1000.0
+            }
+        ],
+        "transactions": [
+            {
+                "transaction_id": "1234567890",
+                "account_number": "1234567890",
+                "amount": 500.0
+            }
+        ]
+    }
+}

@@ -20,6 +20,8 @@ export default function App() {
   const [settings, setSettings] = useState({});
   const [leftoverCount, setLeftoverCount] = useState(0);
   const [metrics, setMetrics] = useState(null);
+  const [decisions, setDecisions] = useState([]);
+  const [neonStatus, setNeonStatus] = useState(null);
 
   // Tab navigation
   const [currentTab, setCurrentTab] = useState('hub'); // 'hub', 'pipeline', 'workforce', 'metrics', 'tasks', 'projects', 'telegram'
@@ -185,9 +187,25 @@ export default function App() {
       setVoiceLogs(voiceRes);
       setSettings(setRes);
       setSettingsForm(setRes);
+      fetchDecisions();
+      fetchNeonStatus();
     } catch (e) {
       console.warn('Backend connecting...', e.message);
     }
+  };
+
+  const fetchDecisions = async () => {
+    try {
+      const res = await fetch('/api/decisions').then(r => r.json());
+      setDecisions(Array.isArray(res) ? res : []);
+    } catch (e) {}
+  };
+
+  const fetchNeonStatus = async () => {
+    try {
+      const res = await fetch('/api/neon/status').then(r => r.json());
+      setNeonStatus(res);
+    } catch (e) {}
   };
 
   const fetchWorkforce = async () => {
@@ -397,6 +415,7 @@ export default function App() {
         <div className="nav-tabs-group">
           {[
             { id: 'hub', label: 'SWARM HUB', icon: Bot },
+            { id: 'decisions', label: 'DECISION VAULT', icon: Shield },
             { id: 'pipeline', label: 'STAGE PIPELINE', icon: GitMerge },
             { id: 'workforce', label: `WORKFORCE (${totalCapacity})`, icon: Users },
             { id: 'metrics', label: 'METRICS', icon: Activity },
@@ -826,6 +845,85 @@ export default function App() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: DECISION VAULT & REASONING MATRIX */}
+      {currentTab === 'decisions' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div className="hud-panel">
+            <div className="hud-panel-header">
+              <span className="panel-title">
+                <Shield size={16} className="icon-accent" />
+                <span>AUTONOMOUS DECISION MATRIX & REASONING LOGS</span>
+              </span>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <span className="badge badge-cyan">POSTGRESQL NEON SYNC</span>
+                <button className="hud-btn hud-btn-outline" style={{ padding: '3px 8px', fontSize: '11px' }} onClick={fetchDecisions}>
+                  <RefreshCw size={12} />
+                  <span>REFRESH</span>
+                </button>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '650px', overflowY: 'auto' }}>
+              {decisions.length === 0 ? (
+                <div style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
+                  No autonomous decisions evaluated yet. Speak a directive or run an enterprise build to view live decision audits.
+                </div>
+              ) : (
+                decisions.map(dec => (
+                  <div key={dec.id} style={{
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-subtle)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span className={`badge ${
+                          dec.risk_level === 'HIGH_INTEGRITY' ? 'badge-amber' :
+                          dec.risk_level === 'CRITICAL' ? 'badge-red' : 'badge-cyan'
+                        }`}>
+                          {dec.risk_level || 'LOW RISK'}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-display)', color: '#00f0ff', fontWeight: 'bold', fontSize: '14px' }}>
+                          "{dec.directive}"
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '11px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+                        {new Date(dec.timestamp).toLocaleTimeString()}
+                      </span>
+                    </div>
+
+                    <div style={{ fontSize: '12.5px', color: '#cbd5e1', lineHeight: '1.5', background: 'rgba(0,0,0,0.3)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--cyan)' }}>
+                      💡 <strong style={{ color: '#00f0ff' }}>Decision Rationale:</strong> {dec.decision_rationale}
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '20px', fontSize: '11.5px', color: '#94a3b8' }}>
+                      <span>👤 <strong>Lead:</strong> {dec.agent_lead}</span>
+                      <span>🏢 <strong>Division:</strong> {dec.division}</span>
+                      <span>🤖 <strong>Model:</strong> {dec.model_used}</span>
+                      <span>📊 <strong>Stages:</strong> {dec.stages_planned || 8} Stages</span>
+                    </div>
+
+                    {dec.actions_taken && Array.isArray(dec.actions_taken) && dec.actions_taken.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' }}>
+                        {dec.actions_taken.map((act, i) => (
+                          <span key={i} className="chip" style={{ fontSize: '10.5px' }}>
+                            ✓ {act}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -1367,6 +1465,18 @@ export default function App() {
                   placeholder="e.g. 987654321"
                   value={settingsForm.telegramChatId || ''}
                   onChange={e => setSettingsForm({ ...settingsForm, telegramChatId: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>NEON_DATABASE_URL (PostgreSQL Serverless)</label>
+                <input
+                  type="password"
+                  className="hud-input"
+                  style={{ width: '100%', marginTop: '5px' }}
+                  placeholder="postgresql://[user]:[password]@[endpoint].neon.tech/neondb?sslmode=require"
+                  value={settingsForm.databaseUrl || ''}
+                  onChange={e => setSettingsForm({ ...settingsForm, databaseUrl: e.target.value })}
                 />
               </div>
 

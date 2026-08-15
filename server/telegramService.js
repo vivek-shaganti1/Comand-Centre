@@ -8,6 +8,7 @@ import { ProjectBuilder } from './projectBuilder.js';
 import { sleepManager } from './sleepManager.js';
 import { OpenAiService } from './openAiService.js';
 import { GroqService } from './groqService.js';
+import { DecisionMatrix } from './decisionMatrix.js';
 
 export class TelegramService {
   constructor() {
@@ -282,6 +283,13 @@ export class TelegramService {
       parsedIntent: { actionType, source: isVoice ? 'Telegram Voice' : 'Telegram Text' },
       duration: isVoice ? 5 : 0,
       responseText: responseMessage
+    });
+
+    // Evaluate & Audit Autonomous Decision in Neon
+    const decision = await DecisionMatrix.evaluateDirective({
+      prompt: text,
+      intent: { actionType, projectName, isEod: lower.includes('end of day') },
+      selectedModel: db.getSettings().selectedModel || 'llama-3.3-70b-versatile'
     });
 
     // Broadcast update to WebSocket HUD

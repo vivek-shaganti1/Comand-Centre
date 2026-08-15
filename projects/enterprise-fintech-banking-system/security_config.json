@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "username": "admin",
+    "password": "password"
+  },
+  "encryption": {
+    "algorithm": "AES-256",
+    "key": "secret_key"
+  },
+  "firewall": {
+    "rules": [
+      {
+        "protocol": "tcp",
+        "port": 22
+      }
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+System Requirements:
+1. Support for multiple user roles
+2. Integration with existing banking infrastructure
+3. Compliance with financial regulations

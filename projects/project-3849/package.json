@@ -1,0 +1,16 @@
+{
+  "name": "project-3849-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "parcel index.html",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    " Claude": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.3",
+    "parcel": "^2.6.2"
+  }
+}

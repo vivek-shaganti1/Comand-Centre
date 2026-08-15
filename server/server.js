@@ -23,6 +23,8 @@ import { reminderScheduler } from './reminderScheduler.js';
 import { ProjectBuilder } from './projectBuilder.js';
 import { sleepManager } from './sleepManager.js';
 import { OpenAiService } from './openAiService.js';
+import { neonDb } from './neonDb.js';
+import { DecisionMatrix } from './decisionMatrix.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -307,7 +309,33 @@ app.post('/api/settings', (req, res) => {
   res.json(updated);
 });
 
-// 8. Telegram Manual Message Test
+// 8. Decisions & Executive Reasoning Matrix API
+app.get('/api/decisions', async (req, res) => {
+  try {
+    const decisions = await neonDb.getDecisions();
+    res.json(decisions);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// 9. Neon Database Management API
+app.get('/api/neon/status', (req, res) => {
+  res.json({
+    connected: neonDb.isConnected,
+    hasDatabaseUrl: Boolean(process.env.DATABASE_URL || db.getSettings().databaseUrl)
+  });
+});
+
+app.post('/api/neon/init', async (req, res) => {
+  if (req.body.databaseUrl) {
+    neonDb.initClient(req.body.databaseUrl);
+  }
+  const success = await neonDb.initSchema();
+  res.json({ success });
+});
+
+// 10. Telegram Manual Message Test
 app.post('/api/telegram/test-send', async (req, res) => {
   const { message } = req.body;
   const sent = await telegramService.sendMessage(null, message || '🤖 Test alert from JARVIS Command Center');
