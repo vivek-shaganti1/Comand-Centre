@@ -1,0 +1,1 @@
+CREATE TABLE quantum_telemetry (id SERIAL PRIMARY KEY, stage INTEGER, data JSONB, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP); CREATE INDEX idx_stage ON quantum_telemetry (stage);

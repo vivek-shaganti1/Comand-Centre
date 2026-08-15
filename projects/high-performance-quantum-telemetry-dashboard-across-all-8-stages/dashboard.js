@@ -1,0 +1,1 @@
+class Dashboard { constructor() { this.stages = []; } addStage(stage) { this.stages.push(stage); } render() { // Render dashboard stages } }

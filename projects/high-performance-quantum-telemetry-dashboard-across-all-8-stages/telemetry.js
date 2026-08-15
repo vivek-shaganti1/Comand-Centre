@@ -1,0 +1,1 @@
+class Telemetry { constructor(data) { this.data = data; } render() { // Render telemetry data } }

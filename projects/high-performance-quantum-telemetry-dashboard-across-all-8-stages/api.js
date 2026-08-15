@@ -1,0 +1,1 @@
+const apiEndpoint = 'https://example.com/api/telemetry'; // API endpoint for telemetry data

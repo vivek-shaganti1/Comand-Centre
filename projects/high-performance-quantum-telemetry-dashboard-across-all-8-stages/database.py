@@ -1,0 +1,1 @@
+from sqlalchemy import create_engine; from sqlalchemy.orm import sessionmaker; engine = create_engine('postgresql://postgres:password@localhost/quantum_telemetry'); Session = sessionmaker(bind=engine); session = Session();

@@ -12,9 +12,10 @@ dist/
 .env.local
 server/.env
 
-# Uploads & Temp files
+# Uploads & Temp files & DB data
 uploads/*
 !uploads/.gitkeep
+data/*.json
 data/stark_daemon*.log
 
 # OS generated files

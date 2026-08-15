@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS telemetry (
+    id INTEGER PRIMARY KEY,
+    stage TEXT NOT NULL,
+    data TEXT NOT NULL
+);

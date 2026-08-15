@@ -1,0 +1,1 @@
+import psycopg2; DB_HOST = 'localhost'; DB_NAME = 'quantum_telemetry'; DB_USER = 'postgres'; DB_PASSWORD = 'password';

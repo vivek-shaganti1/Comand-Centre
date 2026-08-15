@@ -1,0 +1,5 @@
+{
+  "encryption": "AES-256",
+  "authentication": "OAuth 2.0",
+  "authorization": "Role-Based Access Control"
+}

@@ -1,0 +1,16 @@
+{
+  "telemetry_data": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "timestamp": {
+        "type": "string"
+      },
+      "value": {
+        "type": "number"
+      }
+    }
+  }
+}

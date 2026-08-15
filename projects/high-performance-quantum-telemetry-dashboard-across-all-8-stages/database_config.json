@@ -1,0 +1,9 @@
+{
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "username": "stark",
+    "password": "stark123",
+    "name": "quantum_telemetry"
+  }
+}

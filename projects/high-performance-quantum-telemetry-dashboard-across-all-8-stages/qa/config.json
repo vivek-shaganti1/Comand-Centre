@@ -1,0 +1,6 @@
+{
+    "qa": {
+        "test_data": "test_data.json",
+        "test_dashboard": "test_dashboard.json"
+    }
+}

@@ -1,0 +1,1 @@
+const dashboard = document.getElementById('dashboard'); // Initialize dashboard container

@@ -1,0 +1,1 @@
+from sqlalchemy import Column, Integer, JSON; from sqlalchemy.ext.declarative import declarative_base; Base = declarative_base(); class QuantumTelemetry(Base): __tablename__ = 'quantum_telemetry'; id = Column(Integer, primary_key=True); stage = Column(Integer); data = Column(JSON);

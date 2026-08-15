@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Quantum Telemetry Schema",
+  "type": "object",
+  "properties": {
+    "stage": {
+      "type": "integer"
+    },
+    "metric_name": {
+      "type": "string"
+    },
+    "metric_value": {
+      "type": "number"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["stage", "metric_name", "metric_value", "timestamp"]
+}

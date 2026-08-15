@@ -1,0 +1,1 @@
+class Stage { constructor(name) { this.name = name; this.telemetry = []; } addTelemetry(data) { this.telemetry.push(data); } render() { // Render stage telemetry } }
