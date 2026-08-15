@@ -1,0 +1,20 @@
+{
+  "name": "command-center-server",
+  "version": "1.0.0",
+  "description": "Avengers JARVIS Autonomous Command Center Backend",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test/system.test.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "ws": "^8.17.0"
+  }
+}

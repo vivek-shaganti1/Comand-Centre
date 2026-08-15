@@ -1,0 +1,14 @@
+{
+  "name": "enterprise-fintech-banking-system",
+  "version": "1.0.0",
+  "description": "Enterprise Fintech Banking System - Built by 8-Division Autonomous Workforce",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test.js"
+  },
+  "author": "Stark Enterprise Workforce",
+  "license": "MIT"
+}

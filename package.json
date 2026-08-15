@@ -1,0 +1,12 @@
+{
+  "name": "stark-command-center",
+  "version": "1.0.0",
+  "description": "Avengers JARVIS 24/7 Autonomous Command Center",
+  "scripts": {
+    "start": "bash start.sh",
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "daemon:install": "bash scripts/setup-stark-daemon.sh",
+    "test": "cd server && npm test"
+  }
+}

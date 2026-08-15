@@ -1,0 +1,26 @@
+{
+  "appName": "Test Enterprise Radar",
+  "version": "1.0.0",
+  "architect": "Vikram Patel (Database Core)",
+  "tables": {
+    "entities": {
+      "primaryKey": "id",
+      "columns": {
+        "id": "UUID",
+        "name": "VARCHAR(255)",
+        "payload": "JSONB",
+        "status": "ENUM(active, completed, archived)",
+        "createdAt": "TIMESTAMP"
+      }
+    },
+    "audit_logs": {
+      "primaryKey": "id",
+      "columns": {
+        "id": "UUID",
+        "entityId": "UUID",
+        "action": "VARCHAR(100)",
+        "timestamp": "TIMESTAMP"
+      }
+    }
+  }
+}
