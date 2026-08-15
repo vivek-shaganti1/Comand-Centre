@@ -5,6 +5,7 @@ import { db } from './db.js';
 import { agentSwarm } from './agents.js';
 import { sleepManager } from './sleepManager.js';
 import { OpenAiService } from './openAiService.js';
+import { GroqService } from './groqService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -160,13 +161,27 @@ export class ProjectBuilder {
           progress: stageProgress
         });
 
-        // Stage-specific file generation (OpenAI GPT-4o / GPT-4o-mini with local generator fallback)
-        let filesForStage = await OpenAiService.generateStageCode({
-          stageKey: st.key,
-          projectName: name,
-          prompt,
-          modelOverride: db.getSettings().selectedModel
-        });
+        // Stage-specific file generation (Groq LPU / OpenAI GPT-4o / Local fallback)
+        const selectedModel = db.getSettings().selectedModel || 'llama-3.3-70b-versatile';
+        let filesForStage = null;
+
+        if (selectedModel.includes('llama') || selectedModel.includes('mixtral') || db.getSettings().groqApiKey) {
+          filesForStage = await GroqService.generateStageCode({
+            stageKey: st.key,
+            projectName: name,
+            prompt,
+            model: selectedModel.includes('llama') ? selectedModel : 'llama-3.3-70b-versatile'
+          });
+        }
+
+        if (!filesForStage || filesForStage.length === 0) {
+          filesForStage = await OpenAiService.generateStageCode({
+            stageKey: st.key,
+            projectName: name,
+            prompt,
+            modelOverride: selectedModel
+          });
+        }
 
         if (!filesForStage || filesForStage.length === 0) {
           filesForStage = ProjectBuilder.generateFilesForStage(st.key, name, prompt, engine);

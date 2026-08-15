@@ -56,6 +56,8 @@ export default function App() {
     telegramChatId: '',
     openaiApiKey: '',
     anthropicApiKey: '',
+    groqApiKey: '',
+    selectedModel: 'llama-3.3-70b-versatile',
     eodReminderTime: '21:00'
   });
 
@@ -445,7 +447,10 @@ export default function App() {
                 setSettingsForm(prev => ({ ...prev, selectedModel: newModel }));
               }}
             >
-              <option value="gpt-4o" style={{ background: '#0a1020', color: '#fff' }}>OpenAI GPT-4o (Default)</option>
+              <option value="llama-3.3-70b-versatile" style={{ background: '#0a1020', color: '#fff' }}>⚡ Groq Llama 3.3 70B (Ultra-Fast)</option>
+              <option value="llama-3.1-8b-instant" style={{ background: '#0a1020', color: '#fff' }}>⚡ Groq Llama 3.1 8B (Instant)</option>
+              <option value="mixtral-8x7b-32768" style={{ background: '#0a1020', color: '#fff' }}>⚡ Groq Mixtral 8x7B</option>
+              <option value="gpt-4o" style={{ background: '#0a1020', color: '#fff' }}>OpenAI GPT-4o (Flagship)</option>
               <option value="gpt-4o-mini" style={{ background: '#0a1020', color: '#fff' }}>OpenAI GPT-4o-mini</option>
               <option value="o3-mini" style={{ background: '#0a1020', color: '#fff' }}>OpenAI o3-mini (Reasoning)</option>
               <option value="claude-3-5-sonnet" style={{ background: '#0a1020', color: '#fff' }}>Claude 3.5 Sonnet</option>
@@ -1366,6 +1371,18 @@ export default function App() {
               </div>
 
               <div>
+                <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>GROQ_API_KEY (Ultra-Fast LPU Inference & Whisper Large)</label>
+                <input
+                  type="password"
+                  className="hud-input"
+                  style={{ width: '100%', marginTop: '5px' }}
+                  placeholder="gsk_..."
+                  value={settingsForm.groqApiKey || ''}
+                  onChange={e => setSettingsForm({ ...settingsForm, groqApiKey: e.target.value })}
+                />
+              </div>
+
+              <div>
                 <label style={{ fontSize: '11.5px', color: '#94a3b8' }}>OPENAI_API_KEY (For Whisper Audio & GPT-4o Code Engine)</label>
                 <input
                   type="password"
@@ -1382,9 +1399,12 @@ export default function App() {
                 <select
                   className="hud-input"
                   style={{ width: '100%', marginTop: '5px' }}
-                  value={settingsForm.selectedModel || 'gpt-4o'}
+                  value={settingsForm.selectedModel || 'llama-3.3-70b-versatile'}
                   onChange={e => setSettingsForm({ ...settingsForm, selectedModel: e.target.value })}
                 >
+                  <option value="llama-3.3-70b-versatile">⚡ Groq Llama 3.3 70B (Ultra-Fast LPU)</option>
+                  <option value="llama-3.1-8b-instant">⚡ Groq Llama 3.1 8B (Sub-Second Instant)</option>
+                  <option value="mixtral-8x7b-32768">⚡ Groq Mixtral 8x7B (32k Context)</option>
                   <option value="gpt-4o">OpenAI GPT-4o (High Performance Flagship)</option>
                   <option value="gpt-4o-mini">OpenAI GPT-4o-mini (Fast & Efficient)</option>
                   <option value="o3-mini">OpenAI o3-mini (High-Level Reasoning)</option>

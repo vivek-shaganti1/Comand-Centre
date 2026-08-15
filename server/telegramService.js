@@ -7,6 +7,7 @@ import { agentSwarm } from './agents.js';
 import { ProjectBuilder } from './projectBuilder.js';
 import { sleepManager } from './sleepManager.js';
 import { OpenAiService } from './openAiService.js';
+import { GroqService } from './groqService.js';
 
 export class TelegramService {
   constructor() {
@@ -294,12 +295,12 @@ export class TelegramService {
     return { transcript: text, actionType, responseMessage };
   }
 
-  // Transcribe audio using OpenAI Whisper if API key provided, otherwise local NLP
+  // Transcribe audio using Groq Whisper / OpenAI Whisper if API key provided, otherwise local NLP
   async transcribeAudioFile(fileUrl, voiceObj) {
     const settings = db.getSettings();
-    if (settings.openaiApiKey && fileUrl) {
+    if ((settings.groqApiKey || settings.openaiApiKey) && fileUrl) {
       try {
-        console.log('[TRANSCRIPTION] Calling OpenAI Whisper API for Telegram voice note...');
+        console.log('[TRANSCRIPTION] Fetching Telegram voice note for LPU/Whisper transcription...');
         const tempAudioPath = path.join(__dirname, '..', 'uploads', `tg-voice-${Date.now()}.oga`);
         
         // Download audio file
@@ -316,15 +317,22 @@ export class TelegramService {
           });
         });
 
-        const whisperTranscript = await OpenAiService.transcribeAudio(tempAudioPath, settings.openaiApiKey);
+        let transcript = null;
+        if (settings.groqApiKey) {
+          transcript = await GroqService.transcribeAudio(tempAudioPath, settings.groqApiKey);
+        }
+        if (!transcript && settings.openaiApiKey) {
+          transcript = await OpenAiService.transcribeAudio(tempAudioPath, settings.openaiApiKey);
+        }
+
         try { fs.unlinkSync(tempAudioPath); } catch (e) {}
 
-        if (whisperTranscript && whisperTranscript.trim()) {
-          console.log(`[WHISPER TRANSCRIPTION SUCCESS]: "${whisperTranscript}"`);
-          return whisperTranscript;
+        if (transcript && transcript.trim()) {
+          console.log(`[WHISPER TRANSCRIPTION SUCCESS]: "${transcript}"`);
+          return transcript;
         }
       } catch (e) {
-        console.warn('[TRANSCRIPTION] Whisper fallback notice:', e.message);
+        console.warn('[TRANSCRIPTION] Speech fallback notice:', e.message);
       }
     }
 
